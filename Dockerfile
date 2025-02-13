@@ -1,5 +1,5 @@
 # base image
-FROM golang:1.22-alpine as base
+FROM golang:1.23.3-alpine as base
 WORKDIR /learn-go
 
 ENV CGO_ENABLED=0
