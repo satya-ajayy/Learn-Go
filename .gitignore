@@ -1,1 +1,4 @@
 .idea
+.Ds_Store
+venv
+.venv
