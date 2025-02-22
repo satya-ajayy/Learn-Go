@@ -74,8 +74,8 @@ func InitializeServer(ctx context.Context, k config.Config, logger *zap.Logger) 
 // LoadConfig loads the default configuration and overrides it with the config file
 // specified by the path defined in the config flag
 func LoadConfig() *koanf.Koanf {
-	confifPathMsg := "Path to the application config file"
-	configPath := kingpin.Flag("config", confifPathMsg).Short('c').Default("config.yml").String()
+	configPathMsg := "Path to the application config file"
+	configPath := kingpin.Flag("config", configPathMsg).Short('c').Default("config.yml").String()
 
 	kingpin.Parse()
 
@@ -97,9 +97,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)
 	}
-	updatedKonf := LoadSecrets(appKonf)
 
-	// Validate configuration before starting the server
+	// Update and Validate config before starting the server
+	updatedKonf := LoadSecrets(appKonf)
 	if err = updatedKonf.Validate(); err != nil {
 		log.Fatalf("Invalid configuration: %v", err)
 	}
