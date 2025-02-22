@@ -15,7 +15,7 @@ import (
 	xhmodels "learn-go/models/xhandlers"
 	mongodb "learn-go/repositories/mongodb"
 	health "learn-go/services/health"
-	logs "learn-go/services/logs"
+	logs "learn-go/services/logger"
 	students "learn-go/services/students"
 	consts "learn-go/utils/constants"
 

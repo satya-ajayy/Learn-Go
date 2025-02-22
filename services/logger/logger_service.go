@@ -1,4 +1,4 @@
-package logs
+package logger
 
 import (
 	// Go Internal Packages
@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	// Local Packages
-	models "learn-go/models/logs"
+	models "learn-go/models/logging"
 	helpers "learn-go/utils/helpers"
 )
 
@@ -14,15 +14,15 @@ type LogsRepository interface {
 	InsertLog(ctx context.Context, student models.LogModel) error
 }
 
-type LogsService struct {
+type LoggerService struct {
 	loggerRepository LogsRepository
 }
 
-func NewService(loggerRepository LogsRepository) *LogsService {
-	return &LogsService{loggerRepository: loggerRepository}
+func NewService(loggerRepository LogsRepository) *LoggerService {
+	return &LoggerService{loggerRepository: loggerRepository}
 }
 
-func (s *LogsService) InsertLog(ctx context.Context, log models.LogModel) (string, error) {
+func (s *LoggerService) InsertLog(ctx context.Context, log models.LogModel) (string, error) {
 	log.ID = helpers.GenerateRandomID()
 	log.Timestamp = helpers.GetCurrentTimeString()
 	err := s.loggerRepository.InsertLog(ctx, log)

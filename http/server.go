@@ -64,7 +64,7 @@ func (s *Server) Listen(ctx context.Context, addr string) error {
 					r.Put("/{rollNo}", s.ToHTTPHandlerFunc(s.students.Update))
 					r.Delete("/{rollNo}", s.ToHTTPHandlerFunc(s.students.Delete))
 				})
-				r.Route("/logs", func(r chi.Router) {
+				r.Route("/logger", func(r chi.Router) {
 					r.Post("/", s.ToHTTPHandlerFunc(s.logs.Insert))
 				})
 			})

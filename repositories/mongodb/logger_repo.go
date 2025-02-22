@@ -5,7 +5,7 @@ import (
 	"context"
 
 	// Local Packages
-	models "learn-go/models/logs"
+	models "learn-go/models/logging"
 
 	// External Packages
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,7 +17,7 @@ type LogsRepository struct {
 }
 
 func NewLogsRepository(client *mongo.Client) *LogsRepository {
-	return &LogsRepository{client: client, collection: "logs"}
+	return &LogsRepository{client: client, collection: "logger"}
 }
 
 func (r *LogsRepository) InsertLog(ctx context.Context, log models.LogModel) error {

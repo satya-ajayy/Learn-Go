@@ -9,7 +9,7 @@ import (
 
 	// Local Packages
 	errors "learn-go/errors"
-	models "learn-go/models/logs"
+	models "learn-go/models/logging"
 )
 
 type LogsService interface {
