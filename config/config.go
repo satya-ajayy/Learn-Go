@@ -19,6 +19,7 @@ mongo:
 
 redis:
   uri: "localhost:6379"
+  password: ""
 `)
 
 type Config struct {
@@ -39,7 +40,8 @@ type Mongo struct {
 }
 
 type Redis struct {
-	URI string `koanf:"uri"`
+	URI      string `koanf:"uri"`
+	Password string `koanf:"password"`
 }
 
 // Validate validates the configuration

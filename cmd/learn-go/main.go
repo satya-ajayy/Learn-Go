@@ -3,7 +3,6 @@ package main
 import (
 	// Go Internal Packages
 	"context"
-
 	"log"
 	"os"
 	"os/signal"
@@ -38,6 +37,16 @@ func LoadSecrets(k config.Config) config.Config {
 		k.Mongo.URI = MongoURI
 	}
 
+	RedisURI := os.Getenv("REDIS_URI")
+	if RedisURI != "" {
+		k.Redis.URI = RedisURI
+	}
+
+	RedisPWD := os.Getenv("REDIS_PWD")
+	if RedisPWD != "" {
+		k.Redis.Password = RedisPWD
+	}
+
 	IsProdMode := os.Getenv("IS_PROD_MODE")
 	k.IsProdMode = IsProdMode == "true"
 	return k
@@ -54,7 +63,7 @@ func InitializeServer(ctx context.Context, k config.Config, logger *zap.Logger) 
 	}
 
 	// Redis Connection
-	redisClient, err := redis.Connect(ctx, logger, k.Redis.URI)
+	redisClient, err := redis.Connect(ctx, logger, k.Redis.URI, k.Redis.Password)
 	if err != nil {
 		return nil, err
 	}

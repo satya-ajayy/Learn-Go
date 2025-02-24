@@ -4,11 +4,11 @@ services:
     restart: always
     network_mode: host
     volumes:
-      - ~/docker-data/mongo/db:/data/db
+      - ~/.docker-data/mongo/db:/data/db
 
   redis:
     image: redis:7.4.2
     restart: always
     network_mode: host
     volumes:
-      - ~/docker-data/redis:/data
+      - ~/.docker-data/redis:/data
