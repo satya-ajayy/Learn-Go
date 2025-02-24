@@ -24,7 +24,7 @@ import (
 type Server struct {
 	health   *health.HealthCheckerService
 	logger   *zap.Logger
-	logs     *handlers.LogsHandler
+	orders   *handlers.OrdersHandler
 	prefix   string
 	students *handlers.StudentsHandler
 }
@@ -39,7 +39,7 @@ func NewServer(
 		prefix:   prefix,
 		logger:   logger,
 		students: h.StudentsHandlers,
-		logs:     h.LogsHandlers,
+		orders:   h.OrdersHandlers,
 		health:   healthCheckService,
 	}
 }
@@ -63,9 +63,6 @@ func (s *Server) Listen(ctx context.Context, addr string) error {
 					r.Post("/", s.ToHTTPHandlerFunc(s.students.Insert))
 					r.Put("/{rollNo}", s.ToHTTPHandlerFunc(s.students.Update))
 					r.Delete("/{rollNo}", s.ToHTTPHandlerFunc(s.students.Delete))
-				})
-				r.Route("/logger", func(r chi.Router) {
-					r.Post("/", s.ToHTTPHandlerFunc(s.logs.Insert))
 				})
 			})
 		})
