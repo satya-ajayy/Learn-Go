@@ -70,7 +70,7 @@ func (k Kind) MarshalJSON() ([]byte, error) {
 }
 
 // E is a helper function which constructs an `*Error`
-// You can pass it Kind, error (Err) or string (Message) in any order and it'll construct it.
+// You can pass it Kind, error (Err) or string (Message) in any order, and it'll construct it.
 func E(args ...interface{}) error {
 	e := &Error{}
 	for _, arg := range args {
