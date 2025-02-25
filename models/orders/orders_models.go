@@ -1,20 +1,17 @@
 package orders
 
 import (
-	// Go Internal Packages
-	"time"
-
 	// Local Packages
 	"learn-go/errors"
 )
 
 type Order struct {
-	OrderID     string      `json:"order_id"`
+	ID          string      `json:"order_id"`
 	UserID      string      `json:"user_id"`
 	LineItems   []LineItems `json:"line_items"`
 	OrderStatus string      `json:"order_status"`
-	CreatedAt   time.Time   `json:"created_at"`
-	UpdatedAt   time.Time   `json:"updated_at"`
+	CreatedAt   string      `json:"created_at"`
+	UpdatedAt   string      `json:"updated_at"`
 	ShippedAt   string      `json:"shipped_at"`
 	DeliveredAt string      `json:"delivered_at"`
 }
@@ -28,7 +25,7 @@ type LineItems struct {
 func (o *Order) ValidateCreation() error {
 	ve := errors.ValidationErrs()
 
-	if o.OrderID != "" {
+	if o.ID != "" {
 		ve.Add("order_id", "need to be empty")
 	}
 	if o.UserID == "" {
@@ -65,7 +62,7 @@ func (o *Order) ValidateCreation() error {
 func (o *Order) ValidateUpdate(orderID string) error {
 	ve := errors.ValidationErrs()
 
-	if o.OrderID != orderID {
+	if o.ID != orderID {
 		ve.Add("order_id", "not matched")
 	}
 	if o.UserID == "" {
@@ -77,7 +74,7 @@ func (o *Order) ValidateUpdate(orderID string) error {
 	if o.OrderStatus == "" {
 		ve.Add("order_status", "cannot be empty")
 	}
-	if o.CreatedAt.IsZero() {
+	if o.CreatedAt == "" {
 		ve.Add("created_at", "cannot be empty")
 	}
 	if o.ShippedAt == "" {

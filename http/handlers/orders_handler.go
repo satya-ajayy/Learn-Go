@@ -16,8 +16,8 @@ import (
 )
 
 type OrdersService interface {
-	Insert(ctx context.Context, order omodels.Order) (omodels.Order, error)
-	Get(ctx context.Context, orderID string) (omodels.Order, error)
+	Insert(ctx context.Context, order omodels.Order) (string, error)
+	GetOne(ctx context.Context, orderID string) (omodels.Order, error)
 	Update(ctx context.Context, order omodels.Order) error
 	Delete(ctx context.Context, orderID string) error
 }
@@ -36,7 +36,7 @@ func (a *OrdersHandler) GetOne(w http.ResponseWriter, r *http.Request) (response
 		return nil, http.StatusBadRequest, errors.EmptyParamErr("orderId")
 	}
 
-	order, err := a.svc.Get(r.Context(), orderID)
+	order, err := a.svc.GetOne(r.Context(), orderID)
 	if err == nil {
 		return order, http.StatusOK, nil
 	}
@@ -52,9 +52,10 @@ func (a *OrdersHandler) Insert(w http.ResponseWriter, r *http.Request) (response
 		return nil, http.StatusBadRequest, errors.ValidationFailedErr(err)
 	}
 
-	order, err = a.svc.Insert(r.Context(), order)
+	orderID, err := a.svc.Insert(r.Context(), order)
 	if err == nil {
-		return order, http.StatusCreated, nil
+		return map[string]string{"message": fmt.Sprintf("sucessfully created order : %s", orderID)},
+			http.StatusCreated, nil
 	}
 	return
 }
@@ -76,7 +77,8 @@ func (a *OrdersHandler) Update(w http.ResponseWriter, r *http.Request) (response
 
 	err = a.svc.Update(r.Context(), updatedOrder)
 	if err == nil {
-		return updatedOrder, http.StatusOK, nil
+		return map[string]string{"message": fmt.Sprintf("sucessfully updated order : %s", orderID)},
+			http.StatusOK, nil
 	}
 	return
 }
@@ -89,7 +91,8 @@ func (a *OrdersHandler) Delete(w http.ResponseWriter, r *http.Request) (response
 
 	err = a.svc.Delete(r.Context(), orderID)
 	if err == nil {
-		return map[string]string{"message": fmt.Sprintf("%s is deleted", orderID)}, http.StatusOK, nil
+		return map[string]string{"message": fmt.Sprintf("sucessfully deleted order : %s", orderID)},
+			http.StatusOK, nil
 	}
 	return
 }
