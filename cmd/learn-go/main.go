@@ -10,7 +10,7 @@ import (
 
 	// Local Packages
 	config "learn-go/config"
-	http "learn-go/http"
+	xhttp "learn-go/http"
 	handlers "learn-go/http/handlers"
 	mongodb "learn-go/repositories/mongodb"
 	redis "learn-go/repositories/redis"
@@ -54,7 +54,7 @@ func LoadSecrets(k config.Config) config.Config {
 // InitializeServer sets up an HTTP server with defined handlers.
 // Repositories are initialized, creates the services, and subsequently constructs
 // handlers for the services
-func InitializeServer(ctx context.Context, k config.Config, logger *zap.Logger) (*http.Server, error) {
+func InitializeServer(ctx context.Context, k config.Config, logger *zap.Logger) (*xhttp.Server, error) {
 	// Mongo Connection
 	mongoClient, err := mongodb.Connect(ctx, k.Mongo.URI)
 	if err != nil {
@@ -78,7 +78,7 @@ func InitializeServer(ctx context.Context, k config.Config, logger *zap.Logger) 
 	studentsHandler := handlers.NewStudentsHandler(studentsSvc)
 	ordersHandler := handlers.NewOrdersHandler(ordersSvc)
 
-	server := http.NewServer(k.Prefix, logger, studentsHandler, ordersHandler, healthSvc)
+	server := xhttp.NewServer(k.Prefix, logger, studentsHandler, ordersHandler, healthSvc)
 	return server, nil
 }
 
