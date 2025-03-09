@@ -1,6 +1,7 @@
 package config
 
 import (
+	// Local Packages
 	"learn-go/errors"
 )
 
@@ -10,7 +11,7 @@ logger:
 
 listen: ":8888"
 
-prefix: "/ajay-verse"
+prefix: "/ajayverse"
 
 is_prod_mode: false
 

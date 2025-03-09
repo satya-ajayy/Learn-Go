@@ -107,9 +107,9 @@ func LoadConfig() *koanf.Koanf {
 
 func main() {
 	k := LoadConfig()
-	appKonf := config.Config{}
 
 	// Unmarshalling config into struct
+	appKonf := config.Config{}
 	err := k.Unmarshal("", &appKonf)
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)
