@@ -9,16 +9,16 @@ import (
 
 	// Local Packages
 	errors "learn-go/errors"
-	omodels "learn-go/models/orders"
+	models "learn-go/models"
 
 	// External Packages
 	"github.com/go-chi/chi/v5"
 )
 
 type OrdersService interface {
-	Insert(ctx context.Context, order omodels.Order) (string, error)
-	GetOne(ctx context.Context, orderID string) (omodels.Order, error)
-	Update(ctx context.Context, order omodels.Order) error
+	Insert(ctx context.Context, order models.Order) (string, error)
+	GetOne(ctx context.Context, orderID string) (models.Order, error)
+	Update(ctx context.Context, order models.Order) error
 	Delete(ctx context.Context, orderID string) error
 }
 
@@ -44,7 +44,7 @@ func (a *OrdersHandler) GetOne(w http.ResponseWriter, r *http.Request) (response
 }
 
 func (a *OrdersHandler) Insert(w http.ResponseWriter, r *http.Request) (response any, status int, err error) {
-	var order omodels.Order
+	var order models.Order
 	if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
 		return nil, http.StatusBadRequest, errors.InvalidBodyErr(err)
 	}
@@ -66,7 +66,7 @@ func (a *OrdersHandler) Update(w http.ResponseWriter, r *http.Request) (response
 		return nil, http.StatusBadRequest, errors.EmptyParamErr("orderId")
 	}
 
-	var updatedOrder omodels.Order
+	var updatedOrder models.Order
 	if err := json.NewDecoder(r.Body).Decode(&updatedOrder); err != nil {
 		return nil, http.StatusBadRequest, errors.InvalidBodyErr(err)
 	}

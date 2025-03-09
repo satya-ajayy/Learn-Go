@@ -1,4 +1,4 @@
-package students
+package models
 
 import "learn-go/errors"
 

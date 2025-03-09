@@ -7,7 +7,7 @@ import (
 
 	// Local Packages
 	errors "learn-go/errors"
-	models "learn-go/models/students"
+	models "learn-go/models"
 
 	// External Packages
 	"go.mongodb.org/mongo-driver/mongo"
@@ -42,7 +42,7 @@ func (s *StudentsService) GetAllStudents(ctx context.Context) (*[]models.Student
 func (s *StudentsService) GetOneStudent(ctx context.Context, rollNo string) (*models.StudentModel, error) {
 	student, err := s.studentsRepository.GetOneStudent(ctx, rollNo)
 	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) || student == nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, errors.E(errors.NotFound, "student details not found")
 		}
 		return nil, fmt.Errorf("failed to get student details for rollNo :: %s due to :: %w", rollNo, err)

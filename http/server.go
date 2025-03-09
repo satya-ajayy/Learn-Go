@@ -10,7 +10,6 @@ import (
 	errors "learn-go/errors"
 	handlers "learn-go/http/handlers"
 	resp "learn-go/http/response"
-	xhandlers "learn-go/models/xhandlers"
 	health "learn-go/services/health"
 
 	// External Packages
@@ -32,15 +31,16 @@ type Server struct {
 func NewServer(
 	prefix string,
 	logger *zap.Logger,
-	h *xhandlers.XHandlers,
-	healthCheckService *health.HealthCheckerService,
+	studentsHandlers *handlers.StudentsHandler,
+	ordersHandlers *handlers.OrdersHandler,
+	healthService *health.HealthCheckerService,
 ) *Server {
 	return &Server{
 		prefix:   prefix,
 		logger:   logger,
-		students: h.StudentsHandlers,
-		orders:   h.OrdersHandlers,
-		health:   healthCheckService,
+		students: studentsHandlers,
+		orders:   ordersHandlers,
+		health:   healthService,
 	}
 }
 

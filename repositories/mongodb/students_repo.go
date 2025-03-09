@@ -5,7 +5,7 @@ import (
 	"context"
 
 	// Local Packages
-	models "learn-go/models/students"
+	models "learn-go/models"
 
 	// External Packages
 	"go.mongodb.org/mongo-driver/bson"

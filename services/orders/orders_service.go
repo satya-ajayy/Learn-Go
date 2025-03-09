@@ -7,14 +7,14 @@ import (
 
 	// Local Packages
 	errors "learn-go/errors"
-	omodels "learn-go/models/orders"
+	models "learn-go/models"
 	helpers "learn-go/utils/helpers"
 )
 
 type OrdersRepository interface {
-	Insert(ctx context.Context, order omodels.Order) error
-	GetOne(ctx context.Context, orderID string) (omodels.Order, error)
-	Update(ctx context.Context, order omodels.Order) error
+	Insert(ctx context.Context, order models.Order) error
+	GetOne(ctx context.Context, orderID string) (models.Order, error)
+	Update(ctx context.Context, order models.Order) error
 	Delete(ctx context.Context, orderID string) error
 	Exists(ctx context.Context, orderID string) (bool, error)
 }
@@ -27,7 +27,7 @@ func NewService(ordersRepository OrdersRepository) *OrdersService {
 	return &OrdersService{ordersRepository: ordersRepository}
 }
 
-func (s *OrdersService) Insert(ctx context.Context, order omodels.Order) (string, error) {
+func (s *OrdersService) Insert(ctx context.Context, order models.Order) (string, error) {
 	order.ID = helpers.GenerateRandomID()
 	currTime := helpers.GetCurrentTime()
 	order.CreatedAt = currTime
@@ -36,11 +36,11 @@ func (s *OrdersService) Insert(ctx context.Context, order omodels.Order) (string
 	return order.ID, err
 }
 
-func (s *OrdersService) GetOne(ctx context.Context, orderID string) (omodels.Order, error) {
+func (s *OrdersService) GetOne(ctx context.Context, orderID string) (models.Order, error) {
 	return s.ordersRepository.GetOne(ctx, orderID)
 }
 
-func (s *OrdersService) Update(ctx context.Context, order omodels.Order) error {
+func (s *OrdersService) Update(ctx context.Context, order models.Order) error {
 	exists, err := s.ordersRepository.Exists(ctx, order.ID)
 	if err != nil {
 		return err

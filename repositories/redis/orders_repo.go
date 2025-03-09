@@ -8,7 +8,7 @@ import (
 
 	// Local Packages
 	errors "learn-go/errors"
-	omodels "learn-go/models/orders"
+	models "learn-go/models"
 	helpers "learn-go/utils/helpers"
 
 	// External Packages
@@ -23,25 +23,25 @@ func NewOrdersRepository(client *redis.Client) *OrdersRepository {
 	return &OrdersRepository{client: client}
 }
 
-func (r *OrdersRepository) GetOne(ctx context.Context, orderID string) (omodels.Order, error) {
+func (r *OrdersRepository) GetOne(ctx context.Context, orderID string) (models.Order, error) {
 	key := helpers.GetOrderID(orderID)
 	value, err := r.client.Get(ctx, key).Result()
 
 	if errors.Is(err, redis.Nil) {
-		return omodels.Order{}, errors.E(errors.NotFound, "order not found")
+		return models.Order{}, errors.E(errors.NotFound, "order not found")
 	}
 	if err != nil {
-		return omodels.Order{}, fmt.Errorf("failed to get order: %w", err)
+		return models.Order{}, fmt.Errorf("failed to get order: %w", err)
 	}
 
-	var order omodels.Order
+	var order models.Order
 	if err := json.Unmarshal([]byte(value), &order); err != nil {
-		return omodels.Order{}, fmt.Errorf("failed to decode order: %w", err)
+		return models.Order{}, fmt.Errorf("failed to decode order: %w", err)
 	}
 	return order, nil
 }
 
-func (r *OrdersRepository) Insert(ctx context.Context, order omodels.Order) error {
+func (r *OrdersRepository) Insert(ctx context.Context, order models.Order) error {
 	data, err := json.Marshal(order)
 	if err != nil {
 		return fmt.Errorf("failed to encode order: %w", err)
@@ -67,7 +67,7 @@ func (r *OrdersRepository) Insert(ctx context.Context, order omodels.Order) erro
 	return nil
 }
 
-func (r *OrdersRepository) Update(ctx context.Context, order omodels.Order) error {
+func (r *OrdersRepository) Update(ctx context.Context, order models.Order) error {
 	data, err := json.Marshal(order)
 	if err != nil {
 		return fmt.Errorf("failed to encode order: %w", err)

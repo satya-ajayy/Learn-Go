@@ -9,7 +9,7 @@ import (
 
 	// Local Packages
 	errors "learn-go/errors"
-	models "learn-go/models/students"
+	models "learn-go/models"
 
 	// External Packages
 	"github.com/go-chi/chi/v5"
