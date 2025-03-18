@@ -8,7 +8,7 @@ import (
 	// Local Packages
 	errors "learn-go/errors"
 	models "learn-go/models"
-	helpers "learn-go/utils/helpers"
+	utils "learn-go/utils"
 )
 
 type OrdersRepository interface {
@@ -28,8 +28,8 @@ func NewService(ordersRepository OrdersRepository) *OrdersService {
 }
 
 func (s *OrdersService) Insert(ctx context.Context, order models.Order) (string, error) {
-	order.ID = helpers.GenerateRandomID()
-	currTime := helpers.GetCurrentTime()
+	order.ID = utils.GenerateRandomID()
+	currTime := utils.GetCurrentTime()
 	order.CreatedAt = currTime
 	order.UpdatedAt = currTime
 	err := s.ordersRepository.Insert(ctx, order)
@@ -48,7 +48,7 @@ func (s *OrdersService) Update(ctx context.Context, order models.Order) error {
 	if !exists {
 		return errors.E(errors.NotFound, fmt.Sprintf("order not found with id %s", order.ID))
 	}
-	order.UpdatedAt = helpers.GetCurrentTime()
+	order.UpdatedAt = utils.GetCurrentTime()
 	return s.ordersRepository.Update(ctx, order)
 }
 

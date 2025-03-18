@@ -9,7 +9,7 @@ import (
 	// Local Packages
 	errors "learn-go/errors"
 	models "learn-go/models"
-	helpers "learn-go/utils/helpers"
+	utils "learn-go/utils"
 
 	// External Packages
 	"github.com/redis/go-redis/v9"
@@ -24,7 +24,7 @@ func NewOrdersRepository(client *redis.Client) *OrdersRepository {
 }
 
 func (r *OrdersRepository) GetOne(ctx context.Context, orderID string) (models.Order, error) {
-	key := helpers.GetOrderID(orderID)
+	key := utils.GetOrderID(orderID)
 	value, err := r.client.Get(ctx, key).Result()
 
 	if errors.Is(err, redis.Nil) {
@@ -48,7 +48,7 @@ func (r *OrdersRepository) Insert(ctx context.Context, order models.Order) error
 	}
 
 	tx := r.client.TxPipeline()
-	key := helpers.GetOrderID(order.ID)
+	key := utils.GetOrderID(order.ID)
 
 	res := tx.SetNX(ctx, key, data, 0)
 	if err := res.Err(); err != nil {
@@ -73,7 +73,7 @@ func (r *OrdersRepository) Update(ctx context.Context, order models.Order) error
 		return fmt.Errorf("failed to encode order: %w", err)
 	}
 
-	key := helpers.GetOrderID(order.ID)
+	key := utils.GetOrderID(order.ID)
 	err = r.client.SetXX(ctx, key, data, 0).Err()
 	if err != nil {
 		return fmt.Errorf("failed to update order: %w", err)
@@ -82,7 +82,7 @@ func (r *OrdersRepository) Update(ctx context.Context, order models.Order) error
 }
 
 func (r *OrdersRepository) Delete(ctx context.Context, orderID string) error {
-	key := helpers.GetOrderID(orderID)
+	key := utils.GetOrderID(orderID)
 	tx := r.client.TxPipeline()
 
 	err := tx.Del(ctx, key).Err()
@@ -102,7 +102,7 @@ func (r *OrdersRepository) Delete(ctx context.Context, orderID string) error {
 }
 
 func (r *OrdersRepository) Exists(ctx context.Context, orderID string) (bool, error) {
-	key := helpers.GetOrderID(orderID)
+	key := utils.GetOrderID(orderID)
 	res, err := r.client.Exists(ctx, key).Result()
 	if err != nil {
 		return false, fmt.Errorf("failed to check order: %w", err)

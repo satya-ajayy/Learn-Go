@@ -17,7 +17,6 @@ import (
 	health "learn-go/services/health"
 	orders "learn-go/services/orders"
 	students "learn-go/services/students"
-	consts "learn-go/utils/constants"
 
 	// External Packages
 	"github.com/alecthomas/kingpin/v2"
@@ -110,21 +109,21 @@ func main() {
 	}
 
 	// Update and Validate config before starting the server
-	updatedKonf := LoadSecrets(appKonf)
-	if err = updatedKonf.Validate(); err != nil {
+	prodKonf := LoadSecrets(appKonf)
+	if err = prodKonf.Validate(); err != nil {
 		log.Fatalf("Invalid configuration: %v", err)
 	}
 
-	if !updatedKonf.IsProdMode {
+	if !prodKonf.IsProdMode {
 		k.Print()
 	}
 
 	cfg := zap.NewProductionConfig()
 	cfg.Encoding = "logfmt"
-	_ = cfg.Level.UnmarshalText([]byte(k.String("logger.level")))
+	_ = cfg.Level.UnmarshalText([]byte(prodKonf.Logger.Level))
 	cfg.InitialFields = make(map[string]any)
 	cfg.InitialFields["host"], _ = os.Hostname()
-	cfg.InitialFields["service"] = consts.PROJECT_NAME
+	cfg.InitialFields["service"] = prodKonf.Application
 	cfg.OutputPaths = []string{"stdout"}
 	logger, _ := cfg.Build()
 	defer func() {
@@ -134,11 +133,11 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	srv, err := InitializeServer(ctx, updatedKonf, logger)
+	srv, err := InitializeServer(ctx, prodKonf, logger)
 	if err != nil {
 		logger.Fatal("Cannot initialize server", zap.Error(err))
 	}
-	if err := srv.Listen(ctx, k.String("listen")); err != nil {
+	if err := srv.Listen(ctx, prodKonf.Listen); err != nil {
 		logger.Fatal("Cannot listen", zap.Error(err))
 	}
 }
