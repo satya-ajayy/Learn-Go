@@ -39,7 +39,7 @@ func InitializeServer(ctx context.Context, k config.Config, logger *zap.Logger) 
 	}
 
 	// Redis Connection
-	redisClient, err := redis.Connect(ctx, logger, k.Redis.URI, k.Redis.Password)
+	redisClient, err := redis.Connect(ctx, k.Redis.URI, k.Redis.Password)
 	if err != nil {
 		return nil, err
 	}
