@@ -9,11 +9,11 @@ var DefaultConfig = []byte(`
 application: "learn-go"
 
 logger:
-  level: "info"
+  level: "debug"
 
 listen: ":8888"
 
-prefix: "/ajayverse"
+prefix: "/learn-go"
 
 is_prod_mode: false
 

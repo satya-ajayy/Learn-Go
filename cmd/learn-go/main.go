@@ -28,28 +28,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// LoadSecrets Loads the secret variables and overrides the config
-func LoadSecrets(k config.Config) config.Config {
-	MongoURI := os.Getenv("MONGO_URI")
-	if MongoURI != "" {
-		k.Mongo.URI = MongoURI
-	}
-
-	RedisURI := os.Getenv("REDIS_URI")
-	if RedisURI != "" {
-		k.Redis.URI = RedisURI
-	}
-
-	RedisPWD := os.Getenv("REDIS_PWD")
-	if RedisPWD != "" {
-		k.Redis.Password = RedisPWD
-	}
-
-	IsProdMode := os.Getenv("IS_PROD_MODE")
-	k.IsProdMode = IsProdMode == "true"
-	return k
-}
-
 // InitializeServer sets up an HTTP server with defined handlers.
 // Repositories are initialized, creates the services, and subsequently constructs
 // handlers for the services
@@ -88,7 +66,6 @@ func LoadConfig() *koanf.Koanf {
 	configPath := kingpin.Flag("config", configPathMsg).Short('c').Default("config.yml").String()
 
 	kingpin.Parse()
-
 	k := koanf.New(".")
 	_ = k.Load(rawbytes.Provider(config.DefaultConfig), yaml.Parser())
 	if *configPath != "" {
@@ -108,22 +85,21 @@ func main() {
 		log.Fatalf("Error loading config: %v", err)
 	}
 
-	// Update and Validate config before starting the server
-	prodKonf := LoadSecrets(appKonf)
-	if err = prodKonf.Validate(); err != nil {
+	// Validate the config loaded
+	if err = appKonf.Validate(); err != nil {
 		log.Fatalf("Invalid configuration: %v", err)
 	}
 
-	if !prodKonf.IsProdMode {
+	if !appKonf.IsProdMode {
 		k.Print()
 	}
 
 	cfg := zap.NewProductionConfig()
 	cfg.Encoding = "logfmt"
-	_ = cfg.Level.UnmarshalText([]byte(prodKonf.Logger.Level))
+	_ = cfg.Level.UnmarshalText([]byte(appKonf.Logger.Level))
 	cfg.InitialFields = make(map[string]any)
 	cfg.InitialFields["host"], _ = os.Hostname()
-	cfg.InitialFields["service"] = prodKonf.Application
+	cfg.InitialFields["service"] = appKonf.Application
 	cfg.OutputPaths = []string{"stdout"}
 	logger, _ := cfg.Build()
 	defer func() {
@@ -133,11 +109,11 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	srv, err := InitializeServer(ctx, prodKonf, logger)
+	srv, err := InitializeServer(ctx, appKonf, logger)
 	if err != nil {
 		logger.Fatal("Cannot initialize server", zap.Error(err))
 	}
-	if err := srv.Listen(ctx, prodKonf.Listen); err != nil {
+	if err := srv.Listen(ctx, appKonf.Listen); err != nil {
 		logger.Fatal("Cannot listen", zap.Error(err))
 	}
 }
