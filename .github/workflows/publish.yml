@@ -17,7 +17,7 @@ jobs:
 
       - name: Get Timestamp
         id: timestamp
-        run: echo "TIMESTAMP=$(date -u +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+        run: echo "TIMESTAMP=$(date +%Y%m%d)" >> $GITHUB_ENV
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3

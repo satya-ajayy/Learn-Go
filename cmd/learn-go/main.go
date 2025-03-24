@@ -28,9 +28,8 @@ import (
 	"go.uber.org/zap"
 )
 
-// InitializeServer sets up an HTTP server with defined handlers.
-// Repositories are initialized, creates the services, and subsequently constructs
-// handlers for the services
+// InitializeServer sets up an HTTP server with defined handlers. Repositories are initialized,
+// creates the services, and subsequently constructs handlers for the services
 func InitializeServer(ctx context.Context, k config.Config, logger *zap.Logger) (*xhttp.Server, error) {
 	// Mongo Connection
 	mongoClient, err := mongodb.Connect(ctx, k.Mongo.URI)
