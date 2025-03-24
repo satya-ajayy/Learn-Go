@@ -48,7 +48,7 @@ func InitializeServer(ctx context.Context, k config.Config, logger *zap.Logger) 
 	studentsRepo := mongodb.NewStudentsRepository(mongoClient)
 	ordersRepo := redis.NewOrdersRepository(redisClient)
 
-	healthSvc := health.NewService(logger, mongoClient)
+	healthSvc := health.NewService(logger, mongoClient, redisClient)
 	studentsSvc := students.NewService(studentsRepo)
 	ordersSvc := orders.NewService(ordersRepo)
 
