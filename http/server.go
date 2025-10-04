@@ -9,6 +9,7 @@ import (
 	// Local Packages
 	errors "learn-go/errors"
 	handlers "learn-go/http/handlers"
+	smiddlewares "learn-go/http/middlewares"
 	resp "learn-go/http/response"
 	health "learn-go/services/health"
 
@@ -16,10 +17,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
-	"moul.io/chizap"
 )
 
-// Server struct follow the alphabet order
+// Server struct follows the alphabet order
 type Server struct {
 	health   *health.HealthCheckerService
 	logger   *zap.Logger
@@ -48,10 +48,7 @@ func (s *Server) Listen(ctx context.Context, addr string) error {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
-	r.Use(chizap.New(s.logger, &chizap.Opts{
-		WithReferer:   false,
-		WithUserAgent: false,
-	}))
+	r.Use(smiddlewares.HTTPMiddleware(s.logger))
 	r.Use(middleware.Recoverer)
 
 	r.Route(s.prefix, func(r chi.Router) {
@@ -93,7 +90,7 @@ func (s *Server) Listen(ctx context.Context, addr string) error {
 	}
 }
 
-// ToHTTPHandlerFunc converts a handler function to a http.HandlerFunc.
+// ToHTTPHandlerFunc converts a handler function to an http.HandlerFunc.
 // This wrapper function is used to handle errors and respond to the client
 func (s *Server) ToHTTPHandlerFunc(handler func(w http.ResponseWriter, r *http.Request) (any, int, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

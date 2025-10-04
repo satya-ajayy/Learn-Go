@@ -29,7 +29,8 @@ import (
 )
 
 // InitializeServer sets up an HTTP server with defined handlers. Repositories are initialized,
-// creates the services, and subsequently constructs handlers for the services
+//
+//	create the services, and subsequently construct handlers for the services
 func InitializeServer(ctx context.Context, k config.Config, logger *zap.Logger) (*xhttp.Server, error) {
 	// Mongo Connection
 	mongoClient, err := mongodb.Connect(ctx, k.Mongo.URI)
@@ -61,7 +62,7 @@ func InitializeServer(ctx context.Context, k config.Config, logger *zap.Logger) 
 // LoadConfig loads the default configuration and overrides it with the config file
 // specified by the path defined in the config flag
 func LoadConfig() *koanf.Koanf {
-	configPathMsg := "Path to the application config file"
+	configPathMsg := "path to the application config file"
 	configPath := kingpin.Flag("config", configPathMsg).Short('c').Default("config.yml").String()
 
 	kingpin.Parse()
@@ -81,12 +82,12 @@ func main() {
 	appKonf := config.Config{}
 	err := k.Unmarshal("", &appKonf)
 	if err != nil {
-		log.Fatalf("Error loading config: %v", err)
+		log.Fatalf("error loading config: %v", err)
 	}
 
 	// Validate the config loaded
 	if err = appKonf.Validate(); err != nil {
-		log.Fatalf("Invalid configuration: %v", err)
+		log.Fatalf("invalid configuration: %v", err)
 	}
 
 	if !appKonf.IsProdMode {
@@ -110,9 +111,10 @@ func main() {
 
 	srv, err := InitializeServer(ctx, appKonf, logger)
 	if err != nil {
-		logger.Fatal("Cannot initialize server", zap.Error(err))
+		logger.Fatal("cannot initialize server", zap.Error(err))
 	}
-	if err := srv.Listen(ctx, appKonf.Listen); err != nil {
-		logger.Fatal("Cannot listen", zap.Error(err))
+
+	if err = srv.Listen(ctx, appKonf.Listen); err != nil {
+		logger.Fatal("cannot listen", zap.Error(err))
 	}
 }
